@@ -1,10 +1,22 @@
+<p align="center">
+  <img src="images/logo_clustr.png" width="210">
+</p>
+
 # ClustR  
 ### Clustering de Variables : K-means – Qualitatif – Deep Learning  
 **Package R + Application Shiny**
 
 ---
 
-## 📌 Présentation
+<p align="left">
+  <img src="images/logo_R.png" width="60">
+  <img src="images/logo_shiny.png" width="120">
+  <img src="images/logo_tensorflow.png" width="190">
+</p>
+
+---
+
+## 📌 Présentation générale
 
 **ClustR** est un package R dédié au **clustering de variables**, permettant de regrouper des variables similaires pour :
 
@@ -19,8 +31,6 @@ Il intègre **trois algorithmes complémentaires** :
 2. **ClustQualiVarclus** — MCA + rapport de corrélation η²  
 3. **ClustDeepVar** — Autoencodeur + clustering dans l’espace latent  
 
-
-
 ---
 
 # 🚀 1. ClustKMeansVar (K-means réallocatif)
@@ -29,8 +39,6 @@ Méthode inspirée de Vigneau & Qannari (2003).
 
 ## 🔹 Principe général  
 Les variables sont regroupées selon leur corrélation avec la **synthetic variable** (PC1) du cluster.
-
-Pour chaque cluster \(C_g\), la synthetic variable est :
 
 <p align="center">
   <img src="images/formulas/1.png" width="210">
@@ -209,9 +217,24 @@ Chaque variable est représentée par un vecteur latent \(z_j \in \mathbb{R}^d\)
 
 ---
 
-### 🎥 Démonstration vidéo (YouTube)
+## 🎥 Démonstration vidéo (YouTube)
 
-[![Demo Shiny - ClustR](https://img.youtube.com/vi/SvGQD3ZGr4Y/0.jpg)](https://youtu.be/SvGQD3ZGr4Y)
+➡️ **Démonstration Shiny** : https://youtu.be/SvGQD3ZGr4Y  
+➡️ **Installation ClustR** : https://youtu.be/S9bz7n7uH3k?t=114
+
+---
+
+# 🧪 Installation
+
+### 📜 Script officiel d’installation  
+ **[INSTALATION.R](https://github.com/riadshrn/ClustR/blob/main/INSTALATION.R)**
+
+### 📘 Rapport PDF du package  
+ **[Télécharger le rapport](https://github.com/riadshrn/ClustR/blob/main/Documentation/R_Package.pdf)**
+
+### 🛠️ Setup complet + Test  
+ **[Setup + Test complet](https://github.com/riadshrn/ClustR/blob/main/Documentation/Setup_complet%20%2B%20Test.pdf)**
+
 
 ---
 
