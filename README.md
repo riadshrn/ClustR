@@ -19,6 +19,8 @@ Il intègre **trois algorithmes complémentaires** :
 2. **ClustQualiVarclus** — MCA + rapport de corrélation η²  
 3. **ClustDeepVar** — Autoencodeur + clustering dans l’espace latent  
 
+
+
 ---
 
 # 🚀 1. ClustKMeansVar (K-means réallocatif)
@@ -204,6 +206,12 @@ Chaque variable est représentée par un vecteur latent \(z_j \in \mathbb{R}^d\)
 - Qualitatives : combinaison, ifelse factor, quantiles  
 - Projection dans PCA, MCA ou latent space  
 - Soft membership complet  
+
+---
+
+### 🎥 Démonstration vidéo (YouTube)
+
+[![Demo Shiny - ClustR](https://img.youtube.com/vi/SvGQD3ZGr4Y/0.jpg)](https://youtu.be/SvGQD3ZGr4Y)
 
 ---
 
