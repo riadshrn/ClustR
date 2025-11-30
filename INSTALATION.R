@@ -73,7 +73,7 @@ cat("=== LANCEMENT DE L'APPLICATION SHINY CLUSTR ===\n")
 library(shiny)
 library(ClustR)
 library(shinyWidgets)
-source("C:/Users/thiba/OneDrive/Bureau/repo_riad/ClustR/R/ClustKMeansVar.R")
+
 # Décommente cette ligne pour lancer automatiquement l'app #
 shiny::runApp(system.file("shiny-app", package = "ClustR"))
 
