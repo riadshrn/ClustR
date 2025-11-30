@@ -70,7 +70,7 @@
 #' library(MASS)
 #' data(Boston)
 #'
-#' model <- VariableKMeansClust$new(n_clusters = 3)
+#' model <- ClustKMeansVar$new(n_clusters = 3)
 #' model$fit(Boston)
 #' model$summary()
 #'
