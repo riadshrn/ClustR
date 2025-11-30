@@ -73,7 +73,7 @@
 #' \dontrun{
 #' library(readxl)
 #' data <- read_excel("cars.xlsx")
-#' model <- ClustQualiVarclus$new(n_clusters = NULL, max_iter = 30, seed = 42, verbose = TRUE)
+#' model <- select_k_VARCLUSQuali$new(n_clusters = NULL, max_iter = 30, seed = 42, verbose = TRUE)
 #' model$fit(data)
 #' model$print()
 #' model$summary()
