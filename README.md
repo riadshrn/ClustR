@@ -30,9 +30,8 @@ Les variables sont regroupées selon leur corrélation avec la **synthetic varia
 
 Pour chaque cluster \(C_g\), la synthetic variable est :
 
-\[
-y_g = X_{C_g} w_g
-\]
+y_g = X_{C_g} * w_g
+
 
 avec :
 
