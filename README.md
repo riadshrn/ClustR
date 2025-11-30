@@ -8,9 +8,9 @@
 
 **ClustR** est un package R dédié au **clustering de variables**, permettant de regrouper des variables similaires pour :
 
-- réduire la dimension,
-- créer des variables synthétiques,
-- améliorer l’interprétation,
+- réduire la dimension,  
+- créer des variables synthétiques,  
+- améliorer l’interprétation,  
 - faciliter les modèles prédictifs.
 
 Il intègre **trois algorithmes complémentaires** :
@@ -23,32 +23,42 @@ Il intègre **trois algorithmes complémentaires** :
 
 # 🚀 1. ClustKMeansVar (K-means réallocatif)
 
-Méthode inspirée de Vigneau & Qannari (2003) :contentReference[oaicite:1]{index=1}.
+Méthode inspirée de Vigneau & Qannari (2003).
 
 ## 🔹 Principe général  
 Les variables sont regroupées selon leur corrélation avec la **synthetic variable** (PC1) du cluster.
 
 Pour chaque cluster \(C_g\), la synthetic variable est :
 
-![Formula](images/formulas/1.png)
-
+<p align="center">
+  <img src="images/formulas/1.png" width="210">
+</p>
 
 avec :
 
-![Formula](images/formulas/2.png)
+<p align="center">
+  <img src="images/formulas/2.png" width="260">
+</p>
 
-où 
-![Formula](images/formulas/3.png)
+où :  
+
+<p align="center">
+  <img src="images/formulas/3.png" width="230">
+</p>
 
 ## 🔹 Distance variable–cluster  
 
-![Formula](images/formulas/4.png)
+<p align="center">
+  <img src="images/formulas/4.png" width="280">
+</p>
 
 La variable \(X_j\) est affectée au cluster minimisant \(d(j,g)\).
 
 ## 🔹 Critère global optimisé  
 
-![Formula](images/formulas/5.png)
+<p align="center">
+  <img src="images/formulas/5.png" width="180">
+</p>
 
 où :
 
@@ -69,12 +79,13 @@ où :
 
 # 🚀 2. ClustQualiVarclus (Clustering qualitatif par MCA + η²)
 
-Méthode dédiée aux variables catégorielles basée sur l’ACM :contentReference[oaicite:2]{index=2}.
+Méthode dédiée aux variables catégorielles basée sur l’ACM.
 
 ## 🔹 Étape 1 — Encodage disjonctif complet  
-Chaque variable catégorielle devient des indicatrices (one-hot) :
 
-![Formula](images/formulas/6.png)
+<p align="center">
+  <img src="images/formulas/6.png" width="260">
+</p>
 
 ## 🔹 Étape 2 — MCA par cluster  
 On réalise une analyse des correspondances multiples sur les modalités du cluster.
@@ -82,13 +93,16 @@ On réalise une analyse des correspondances multiples sur les modalités du clus
 L’axe principal obtenu est \(Y_g\).
 
 ## 🔹 Étape 3 — Rapport de corrélation η²  
-Pour une variable \(V\) et un axe factoriel \(Y_g\) :
 
-![Formula](images/formulas/7.png)
+<p align="center">
+  <img src="images/formulas/7.png" width="360">
+</p>
 
 **Affectation :**
 
-![Formula](images/formulas/8.png)
+<p align="center">
+  <img src="images/formulas/8.png" width="350">
+</p>
 
 ## 🔹 Algorithme complet  
 1. Partition initiale des variables  
@@ -106,42 +120,57 @@ Pour une variable \(V\) et un axe factoriel \(Y_g\) :
 
 # 🚀 3. ClustDeepVar (Autoencodeur + clustering latent)
 
-Algorithme deep learning pour capturer les **relations non linéaires** entre variables :contentReference[oaicite:3]{index=3}.
+Algorithme deep learning pour capturer les **relations non linéaires** entre variables.
 
 ## 🔹 Étape 1 — Standardisation  
-![Formula](images/formulas/9.png)
+
+<p align="center">
+  <img src="images/formulas/9.png" width="240">
+</p>
 
 ## 🔹 Étape 2 — Transposition  
-Chaque variable devient une “observation” :
 
-![Formula](images/formulas/10.png)
+<p align="center">
+  <img src="images/formulas/10.png" width="240">
+</p>
 
 ## 🔹 Étape 3 — Encodeur (embeddings)  
 
-![Formula](images/formulas/11.png)
+<p align="center">
+  <img src="images/formulas/11.png" width="260">
+</p>
 
 Chaque variable est représentée par un vecteur latent \(z_j \in \mathbb{R}^d\).
 
 ## 🔹 Étape 4 — Reconstruction  
 
-![Formula](images/formulas/12.png)
+<p align="center">
+  <img src="images/formulas/12.png" width="260">
+</p>
 
 ## 🔹 Projection de variables illustratives  
 
-![Formula](images/formulas/13.png)
-
+<p align="center">
+  <img src="images/formulas/13.png" width="360">
+</p>
 
 ## 🔹 Étape 5 — Clustering des embeddings  
 
-![Formula](images/formulas/14.png)
+<p align="center">
+  <img src="images/formulas/14.png" width="260">
+</p>
 
 ## 🔹 Soft clustering  
 
-![Formula](images/formulas/15.png)
+<p align="center">
+  <img src="images/formulas/15.png" width="380">
+</p>
 
 ## 🔹 Projection de variables illustratives  
 
-![Formula](images/formulas/16.png)
+<p align="center">
+  <img src="images/formulas/16.png" width="360">
+</p>
 
 ---
 
@@ -194,4 +223,3 @@ Encadrant : **Ricco Rakotomalala**
 - ✔ Visualisations interactives  
 - ✔ Nouvelles variables (num & quali)  
 - ✔ Documentation complète  
-
