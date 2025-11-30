@@ -30,28 +30,25 @@ Les variables sont regroupées selon leur corrélation avec la **synthetic varia
 
 Pour chaque cluster \(C_g\), la synthetic variable est :
 
-y_g = X_{C_g} * w_g
+![Formula](images/formulas/1.png)
 
 
 avec :
 
-\[
-w_g = \arg\max_{\|w\|=1} w^\top S_g w
-\]
+![Formula](images/formulas/2.png)
 
-où \(S_g = X_{C_g}^\top X_{C_g}\).
+où 
+![Formula](images/formulas/3.png)
 
 ## 🔹 Distance variable–cluster  
-\[
-d(j,g) = 1 - \rho(X_j , y_g)^2
-\]
+
+![Formula](images/formulas/4.png)
 
 La variable \(X_j\) est affectée au cluster minimisant \(d(j,g)\).
 
 ## 🔹 Critère global optimisé  
-\[
-Q = \frac{B}{T}, \quad T = W + B
-\]
+
+![Formula](images/formulas/5.png)
 
 où :
 
@@ -77,9 +74,7 @@ Méthode dédiée aux variables catégorielles basée sur l’ACM :contentRefere
 ## 🔹 Étape 1 — Encodage disjonctif complet  
 Chaque variable catégorielle devient des indicatrices (one-hot) :
 
-\[
-X \to Z \in \{0,1\}^{n \times m}
-\]
+![Formula](images/formulas/6.png)
 
 ## 🔹 Étape 2 — MCA par cluster  
 On réalise une analyse des correspondances multiples sur les modalités du cluster.
@@ -89,16 +84,11 @@ L’axe principal obtenu est \(Y_g\).
 ## 🔹 Étape 3 — Rapport de corrélation η²  
 Pour une variable \(V\) et un axe factoriel \(Y_g\) :
 
-\[
-\eta^2(V, Y_g)
-= \frac{\mathrm{Var}\left(\mathbb{E}[Y_g \mid V]\right)}{\mathrm{Var}(Y_g)}
-\]
+![Formula](images/formulas/7.png)
 
 **Affectation :**
 
-\[
-V \in C_g \quad \Longleftrightarrow \quad g = \arg\max_{h} \eta^2(V, Y_h)
-\]
+![Formula](images/formulas/8.png)
 
 ## 🔹 Algorithme complet  
 1. Partition initiale des variables  
@@ -119,57 +109,39 @@ V \in C_g \quad \Longleftrightarrow \quad g = \arg\max_{h} \eta^2(V, Y_h)
 Algorithme deep learning pour capturer les **relations non linéaires** entre variables :contentReference[oaicite:3]{index=3}.
 
 ## 🔹 Étape 1 — Standardisation  
-\[
-X_{\text{std}} = \frac{X - \mu}{\sigma}
-\]
+![Formula](images/formulas/9.png)
 
 ## 🔹 Étape 2 — Transposition  
 Chaque variable devient une “observation” :
 
-\[
-X^\top \in \mathbb{R}^{p \times n}
-\]
+![Formula](images/formulas/10.png)
 
 ## 🔹 Étape 3 — Encodeur (embeddings)  
-\[
-Z = f_{\text{enc}}(X^\top), \qquad Z \in \mathbb{R}^{p \times d}
-\]
+
+![Formula](images/formulas/11.png)
 
 Chaque variable est représentée par un vecteur latent \(z_j \in \mathbb{R}^d\).
 
 ## 🔹 Étape 4 — Reconstruction  
-\[
-\hat{X}^\top = f_{\text{dec}}(Z)
-\]
+
+![Formula](images/formulas/12.png)
 
 ## 🔹 Projection de variables illustratives  
-\[
-z_{\text{illu}} =
-\frac{\sum_j \rho(x_j, v) z_j}{\sum_j \rho(x_j, v)}
-\]
+
+![Formula](images/formulas/13.png)
 
 
 ## 🔹 Étape 5 — Clustering des embeddings  
-\[
-C = \text{k-means}(Z, k)
-\]
+
+![Formula](images/formulas/14.png)
 
 ## 🔹 Soft clustering  
-\[
-p_{jk} = 
-\frac{
-\exp(-\|z_j - \mu_k\|^2)
-}{
-\sum_{\ell} \exp(-\|z_j - \mu_\ell\|^2)
-}
-\]
+
+![Formula](images/formulas/15.png)
 
 ## 🔹 Projection de variables illustratives  
 
-\[
-z_{\text{illu}} =
-\frac{\sum_j \rho(x_j, v) z_j}{\sum_j \rho(x_j, v)}
-\]
+![Formula](images/formulas/16.png)
 
 ---
 
