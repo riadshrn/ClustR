@@ -1,69 +1,69 @@
-#' VariableKMeansClust: Clustering de variables par corrélation (PC1-based K-means)
+#' VariableKMeansClust: Variable clustering using correlation (PC1-based K-means)
 #'
 #' @description
-#' Classe R6 implémentant un algorithme de clustering de variables basé sur
-#' l’approche de Vigneau & Qannari (2003).
+#' R6 class implementing a variable clustering algorithm based on
+#' the approach of Vigneau & Qannari (2003).
 #'
-#' Chaque cluster est représenté par la **première composante principale (PC1)**
-#' calculée sur les variables qu’il contient.
-#' Les variables sont réallouées en maximisant la corrélation au carré avec le PC1
-#' de chaque cluster.
-#' La distance utilisée est :
+#' Each cluster is represented by the **first principal component (PC1)**
+#' computed from the variables it contains.
+#' Variables are reallocated by maximizing the squared correlation with the PC1
+#' of each cluster.
+#' The distance used is:
 #'
 #' \deqn{d(j, k) = 1 - \mathrm{cor}(X_j, \mathrm{PC1}_k)^2}
 #'
 #' @details
 #'
-#' **Principe général :**
+#' **General principle:**
 #'
-#' 1. Standardisation des variables (optionnelle).
-#' 2. Initialisation aléatoire d'une partition des variables.
-#' 3. Pour chaque cluster, calcul de la PC1 des variables qu'il contient
-#'    (ou copie de la variable si le cluster n’en contient qu’une).
-#' 4. Réallocation des variables en maximisant \eqn{\mathrm{cor}^2}.
-#' 5. Répétition jusqu’à convergence.
+#' 1. Standardization of variables (optional).
+#' 2. Random initialization of a variable partition.
+#' 3. For each cluster, computation of the PC1 from its variables
+#'    (or copy of the variable if the cluster contains only one).
+#' 4. Reallocation of variables by maximizing \eqn{\mathrm{cor}^2}.
+#' 5. Repeat until convergence.
 #'
-#' **Intérêt :**
+#' **Advantages:**
 #'
-#' - regroupe les variables **corrélées** ;
-#' - structure directement interprétable (PC1 = direction principale du cluster) ;
-#' - méthode rapide, robuste, non supervisée ;
-#' - norme dans l’analyse de variables (voir Vigneau & Qannari 2003).
+#' - groups **correlated variables**;
+#' - directly interpretable structure (PC1 = main direction of the cluster);
+#' - fast, robust, unsupervised method;
+#' - a standard approach in variable analysis (see Vigneau & Qannari 2003).
 #'
-#' **Sorties disponibles :**
-#' - Clusters finaux des variables
-#' - Centroïdes = PC1 de chaque cluster
-#' - Inerties W (intra), B (inter), T (totale) et critère Q = B/T
-#' - Silhouette spécifique Qannari
-#' - Visualisations : PCA globale, PCA par cluster, heatmap, dendrogramme
+#' **Available outputs:**
+#' - Final variable clusters
+#' - Centroids = PC1 of each cluster
+#' - Inertia values W (within), B (between), T (total) and Q = B/T
+#' - Qannari-specific silhouette index
+#' - Visualizations: global PCA, cluster PCA, heatmap, dendrogram
 #'
-#' @section Méthode :
-#' Pour un cluster \eqn{k}, la PC1 maximise la variance commune des variables du cluster.
-#' Chaque variable est ensuite réassignée vers le cluster maximisant
-#' la corrélation au carré avec le centroïde (PC1).
+#' @section Method:
+#' For a cluster \eqn{k}, PC1 maximizes the common variance of the variables in the cluster.
+#' Each variable is then reassigned to the cluster that maximizes
+#' the squared correlation with the centroid (PC1).
 #'
-#' @field n_clusters Nombre de clusters.
-#' @field max_iter Nombre maximal d’itérations de K-means réallocatif.
-#' @field tol Non utilisé (compatibilité).
-#' @field scale Booléen : TRUE = standardisation des variables.
+#' @field n_clusters Number of clusters.
+#' @field max_iter Maximum number of reallocative K-means iterations.
+#' @field tol Not used (compatibility).
+#' @field scale Boolean: TRUE = standardize variables.
 #'
-#' @field var_names Noms des variables numériques.
-#' @field n_obs Nombre d'observations.
-#' @field means Moyennes utilisées pour la standardisation.
-#' @field sds Écarts-types utilisés pour la standardisation.
-#' @field data_raw Données centrées/réduites (matrice numérique).
+#' @field var_names Names of numerical variables.
+#' @field n_obs Number of observations.
+#' @field means Means used for standardization.
+#' @field sds Standard deviations used for standardization.
+#' @field data_raw Centered/scaled data (numeric matrix).
 #'
-#' @field cluster_assignments Vecteur des clusters finaux (longueur = nb variables).
-#' @field centers Matrice (observations x clusters) contenant les PC1 des clusters.
-#' @field iter Nombre d’itérations réalisées.
-#' @field convergence Booléen indiquant si la procédure a convergé.
+#' @field cluster_assignments Vector of final clusters (length = number of variables).
+#' @field centers Matrix (observations x clusters) containing cluster PC1 vectors.
+#' @field iter Number of performed iterations.
+#' @field convergence Boolean indicating convergence of the procedure.
 #'
-#' @field W_k Inertie intra par cluster.
-#' @field W_total Inertie intra totale.
-#' @field B_total Inertie inter totale.
-#' @field T_total Inertie totale.
-#' @field Q Rapport B/T (qualité globale de partition).
-#' @field center_distances Matrice des distances entre centroïdes (PC1).
+#' @field W_k Within-cluster inertia.
+#' @field W_total Total within-cluster inertia.
+#' @field B_total Total between-cluster inertia.
+#' @field T_total Total inertia.
+#' @field Q Ratio B/T (overall partition quality).
+#' @field center_distances Distance matrix between cluster centroids (PC1).
 #'
 #' @examples
 #' \dontrun{
@@ -81,7 +81,7 @@
 #' model$compute_silhouette(Boston)
 #' model$plot_silhouette()
 #'
-#' # Visualisations
+#' # Visualizations
 #' model$plot_global_pca()
 #' model$plot_dendrogram()
 #' model$plot_cluster_pca(1)
