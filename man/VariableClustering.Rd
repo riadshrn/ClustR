@@ -4,50 +4,65 @@
 \alias{VariableClustering}
 \title{VariableClustering: Unified Interface for Variable Clustering}
 \description{
-High-level R6 wrapper providing a scikit-learn style interface for variable
-clustering.
-
-This class centralizes access to all clustering algorithms implemented in the
-ClustR package.
+Unified R6 wrapper class that provides a scikit-learn-style interface
+for all variable clustering methods. Supports three algorithms:
+\itemize{
+\item "deep": ClustDeepVar for autoencoder-based clustering
+\item "kmeans": ClustKMeansVar for K-means réallocatif (Qannari)
+\item "quali_varclus": ClustQualiVarclus for qualitative VARCLUS
+}
 }
 \details{
-This class acts as a \emph{controller} that:
-\itemize{
-\item selects the appropriate clustering algorithm,
-\item forwards \code{.fit()} and \code{.predict()} calls,
-\item provides unified printing, summarization and plotting methods,
-\item ensures API consistency across algorithms.
-}
+This class provides a consistent API across all clustering methods,
+making it easy to switch between algorithms and compare results.
 }
 \examples{
 \dontrun{
-library(ClustR)
+library(VarClustR)
 
-X <- matrix(rnorm(200 * 12), 200, 12)
-
-model <- VariableClustering$new(
+# Deep clustering
+model1 <- VariableClustering$new(
   method = "deep",
   n_clusters = 3,
-  latent_dim = 3
+  latent_dim = 5,
+  epochs = 50
 )
+model1$fit(mtcars)
+model1$summary()
+model1$plot()
 
-model$fit(X)
-model$summary()
-model$plot()
+# K-means clustering
+model2 <- VariableClustering$new(
+  method = "kmeans",
+  n_clusters = 3,
+  seed = 42
+)
+model2$fit(mtcars)
+model2$plot(type = "global_pca")
 
-# Access clusters:
-model$get_clusters()
+# Qualitative VARCLUS
+iris_quali <- data.frame(
+  Species = iris$Species,
+  Size = cut(iris$Sepal.Length, 3)
+)
+model3 <- VariableClustering$new(
+  method = "quali_varclus",
+  n_clusters = 2,
+  seed = 42
+)
+model3$fit(iris_quali)
+model3$plot(type = "eta2_heatmap")
 }
 
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{method}}{Character string: "deep" (others added later)}
+\item{\code{method}}{Character. Clustering method ("deep", "kmeans", "quali_varclus")}
 
-\item{\code{model}}{R6 object. The underlying clustering model instance.}
+\item{\code{model}}{The underlying clustering model object}
 
-\item{\code{n_clusters}}{Number of clusters.}
+\item{\code{n_clusters}}{Number of clusters}
 }
 \if{html}{\out{</div>}}
 }
@@ -57,10 +72,13 @@ model$get_clusters()
 \item \href{#method-VariableClustering-new}{\code{VariableClustering$new()}}
 \item \href{#method-VariableClustering-fit}{\code{VariableClustering$fit()}}
 \item \href{#method-VariableClustering-predict}{\code{VariableClustering$predict()}}
+\item \href{#method-VariableClustering-fit_predict}{\code{VariableClustering$fit_predict()}}
 \item \href{#method-VariableClustering-get_clusters}{\code{VariableClustering$get_clusters()}}
 \item \href{#method-VariableClustering-summary}{\code{VariableClustering$summary()}}
 \item \href{#method-VariableClustering-plot}{\code{VariableClustering$plot()}}
+\item \href{#method-VariableClustering-get_params}{\code{VariableClustering$get_params()}}
 \item \href{#method-VariableClustering-to_dataframe}{\code{VariableClustering$to_dataframe()}}
+\item \href{#method-VariableClustering-compare}{\code{VariableClustering$compare()}}
 \item \href{#method-VariableClustering-print}{\code{VariableClustering$print()}}
 \item \href{#method-VariableClustering-clone}{\code{VariableClustering$clone()}}
 }
@@ -69,7 +87,7 @@ model$get_clusters()
 \if{html}{\out{<a id="method-VariableClustering-new"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-new}{}}}
 \subsection{Method \code{new()}}{
-Constructor for VariableClustering
+Initialize a new VariableClustering object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$new(method = "deep", n_clusters = 3, ...)}\if{html}{\out{</div>}}
 }
@@ -77,20 +95,23 @@ Constructor for VariableClustering
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{method}}{Character. Currently only \code{"deep"} is available.}
+\item{\code{method}}{Character. Clustering method: "deep", "kmeans", or "quali_varclus"}
 
-\item{\code{n_clusters}}{Integer. Number of clusters.}
+\item{\code{n_clusters}}{Integer. Number of clusters (NULL for auto-selection in quali_varclus)}
 
-\item{\code{...}}{Additional arguments forwarded to the selected algorithm.}
+\item{\code{...}}{Additional arguments passed to specific clustering method}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new VariableClustering object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-fit}{}}}
 \subsection{Method \code{fit()}}{
-Fit clustering model
+Fit the clustering model to data
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$fit(X, ...)}\if{html}{\out{</div>}}
 }
@@ -98,78 +119,157 @@ Fit clustering model
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Numeric matrix or data frame.}
+\item{\code{X}}{Data matrix or data frame}
+
+\item{\code{...}}{Additional arguments passed to the fit method}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The VariableClustering object (invisible).
+Self (invisibly) for method chaining
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-predict"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-predict}{}}}
 \subsection{Method \code{predict()}}{
-Predict cluster membership for new variables (if supported)
+Predict cluster membership for new data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$predict(X_new, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$predict(X_new)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X_new}}{New matrix or data.frame}
+\item{\code{X_new}}{New data matrix or data frame}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Vector of predicted cluster assignments
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-VariableClustering-fit_predict"></a>}}
+\if{latex}{\out{\hypertarget{method-VariableClustering-fit_predict}{}}}
+\subsection{Method \code{fit_predict()}}{
+Fit and predict in one step
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$fit_predict(X)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{X}}{Data matrix or data frame}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Vector of cluster assignments
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-get_clusters"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-get_clusters}{}}}
 \subsection{Method \code{get_clusters()}}{
-Return vector of cluster assignments
+Get cluster assignments
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$get_clusters()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Named vector of cluster assignments
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-summary}{}}}
 \subsection{Method \code{summary()}}{
-Print clustering summary (delegates to underlying model)
+Print summary of clustering results
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$summary()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Self (invisibly)
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-plot}{}}}
 \subsection{Method \code{plot()}}{
-Plot method depending on selected algorithm
+Plot clustering results
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$plot(type = "default", ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{Character. Type of plot (depends on method)}
+
+\item{\code{...}}{Additional arguments passed to plotting function}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+NULL (creates plot)
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-VariableClustering-get_params"></a>}}
+\if{latex}{\out{\hypertarget{method-VariableClustering-get_params}{}}}
+\subsection{Method \code{get_params()}}{
+Get model parameters
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$get_params()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+List of model parameters
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-to_dataframe"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-to_dataframe}{}}}
 \subsection{Method \code{to_dataframe()}}{
-Export results to a tidy data.frame
+Export cluster assignments to data frame
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{VariableClustering$to_dataframe()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Data frame with variable names and cluster assignments
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-VariableClustering-compare"></a>}}
+\if{latex}{\out{\hypertarget{method-VariableClustering-compare}{}}}
+\subsection{Method \code{compare()}}{
+Compare with another clustering result
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$compare(other)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{other}}{Another VariableClustering object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+List with comparison metrics
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VariableClustering-print"></a>}}
 \if{latex}{\out{\hypertarget{method-VariableClustering-print}{}}}
 \subsection{Method \code{print()}}{
-Custom print method
+Print method
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$print(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{VariableClustering$print()}\if{html}{\out{</div>}}
 }
 
 }

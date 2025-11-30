@@ -110,6 +110,7 @@ in the latent space.}
 \item \href{#method-ClustDeepVar-fit}{\code{ClustDeepVar$fit()}}
 \item \href{#method-ClustDeepVar-predict}{\code{ClustDeepVar$predict()}}
 \item \href{#method-ClustDeepVar-predict_new}{\code{ClustDeepVar$predict_new()}}
+\item \href{#method-ClustDeepVar-get_clusters}{\code{ClustDeepVar$get_clusters()}}
 \item \href{#method-ClustDeepVar-project_illustrative}{\code{ClustDeepVar$project_illustrative()}}
 \item \href{#method-ClustDeepVar-nearest_to_illustrative}{\code{ClustDeepVar$nearest_to_illustrative()}}
 \item \href{#method-ClustDeepVar-print}{\code{ClustDeepVar$print()}}
@@ -255,6 +256,19 @@ and \code{soft_membership}.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ClustDeepVar-get_clusters"></a>}}
+\if{latex}{\out{\hypertarget{method-ClustDeepVar-get_clusters}{}}}
+\subsection{Method \code{get_clusters()}}{
+Get cluster assignments (compatibility with VariableClustering)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ClustDeepVar$get_clusters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Named integer vector of cluster assignments
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClustDeepVar-project_illustrative"></a>}}
 \if{latex}{\out{\hypertarget{method-ClustDeepVar-project_illustrative}{}}}
 \subsection{Method \code{project_illustrative()}}{
@@ -340,6 +354,7 @@ Plot variable embeddings in 2D latent space.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ClustDeepVar$plot_embeddings_2d(
   dims = c(1L, 2L),
+  use_pca = FALSE,
   new_embeddings = NULL,
   new_clusters = NULL,
   new_labels = NULL,
@@ -376,9 +391,14 @@ embeddings to overlay.}
 \if{latex}{\out{\hypertarget{method-ClustDeepVar-plot_embeddings_3d}{}}}
 \subsection{Method \code{plot_embeddings_3d()}}{
 Plot variable embeddings in 3D latent space (requires rgl).
+
+
+Plot variable embeddings in 3D latent space (requires rgl).
+Automatically applies PCA if latent_dim > 3.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ClustDeepVar$plot_embeddings_3d(
   dims = c(1L, 2L, 3L),
+  use_pca = TRUE,
   new_embeddings = NULL,
   new_clusters = NULL,
   new_labels = NULL,
